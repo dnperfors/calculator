@@ -1,6 +1,6 @@
-Calculator is a simpel scripting language to make calculations. The main purpose is to
-have a simple language that could be used to experiment with different techniques for
-lexing, parsing and executing scripting languages.
+Calculator is a simple scripting language to make calculations. The main purpose is to
+create a simple language to experiment with different techniques for lexing, parsing
+and executing scripting languages.
 
 Calculator is licensed under the MIT License. For more information, see the file 'COPYING'.
 
