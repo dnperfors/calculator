@@ -26,22 +26,8 @@
 
 namespace calculator
 {
-    Expression_ptr parse(const std::string& input)
-    {
-        calculator::iterator begin = input.begin();
-        calculator::iterator end = input.end();
-        std::queue<token> tokens;
-
-        while(begin != end)
-        {
-            tokens.push(calculator::next_token(begin, end));
-        }
-        Parser parser(tokens);
-        return parser.parseExpression();
-    }
-
-    Parser::Parser(std::queue<token> tokens)
-        : tokens_(tokens)
+    Parser::Parser(const std::string& input)
+        : lexer_(input)
     {
         prefixParselets_[token::Number] = std::bind(&Parser::numberParselet, this, std::placeholders::_1);
 
@@ -51,7 +37,7 @@ namespace calculator
 
     int Parser::get_precedence()
     {
-        auto token = tokens_.front();
+        auto token = *lexer_;
         if(infixParselets_[token.type])
         {
             switch(token.type)
@@ -66,8 +52,8 @@ namespace calculator
 
     Expression_ptr Parser::parseExpression(int precedence)
     {
-        auto token = tokens_.front();
-        tokens_.pop();
+        auto token = *lexer_;
+        ++lexer_;
 
         auto prefix = prefixParselets_[token.type];
         if(!prefix)
@@ -78,8 +64,8 @@ namespace calculator
 
         while(precedence < get_precedence())
         {
-            token = tokens_.front();
-            tokens_.pop();
+            token = *lexer_;
+            ++lexer_;
 
             auto infix = infixParselets_[token.type];
             left = infix(left, token);

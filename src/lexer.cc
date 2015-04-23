@@ -30,27 +30,53 @@ namespace calculator
         { '-', token::Minus }
     };
 
-    token next_token(iterator& it1, iterator )
+    Lexer::Lexer(const std::string& input)
+        : iterator_(input.begin())
     {
-        iterator it = it1;
+        advance();
+    }
+
+    bool Lexer::operator!=(const Lexer&) const
+    {
+        return current_.type != token::EndOfFile;
+    }
+
+    void Lexer::operator++()
+    {
+        advance();
+    }
+
+    token Lexer::operator*() const
+    {
+        return current_;
+    }
+
+    void Lexer::advance()
+    {
+        current_ = next_token();
+    }
+
+    token Lexer::next_token()
+    {
+        iterator it = iterator_;
         if(*it == ' ')
         {
             ++it;
-            ++it1;
+            ++iterator_;
         }
         if(single_character_tokens.find(*it) != single_character_tokens.end())
         {
-            ++it1;
-            return token(single_character_tokens.at(*it), it, it1); 
+            ++iterator_;
+            return token(single_character_tokens.at(*it), it, iterator_); 
         }
-        if(*it1 >= '0' && *it1 <= '9')
+        if(*iterator_ >= '0' && *iterator_ <= '9')
         {
             do
             {
-                ++it1;
+                ++iterator_;
             }
-            while((*it1 >= '0' && *it1 <= '9') || *it1 == '.');
-            return token(token::Number, it, it1);
+            while((*iterator_ >= '0' && *iterator_ <= '9') || *iterator_ == '.');
+            return token(token::Number, it, iterator_);
         }
         return token();
     }

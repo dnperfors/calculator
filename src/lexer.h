@@ -41,7 +41,22 @@ struct token
     iterator end;
 };
 
-token next_token(iterator& it1, iterator it2);
+class Lexer
+{
+public:
+    Lexer(const std::string& input);
+    const Lexer& begin() const { return *this; }
+    const Lexer& end() const { return *this; }
+
+    bool operator!=(const Lexer&) const;
+    void operator++();
+    token operator*() const;
+private:
+    void advance();
+    token next_token();
+    iterator iterator_;
+    token current_;
+};
 
 }
 

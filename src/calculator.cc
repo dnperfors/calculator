@@ -39,7 +39,7 @@ int main(int, char**)
         {
             break;
         }
-        auto expression = calculator::parse(input);
+        auto expression = calculator::Parser(input).parseExpression();
         
         calculator::DebugExpressionVisitor debug;
         expression->accept(debug);

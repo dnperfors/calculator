@@ -27,7 +27,7 @@
 
 TEST_CASE("Should be able to calculate add function")
 {
-    auto expression = calculator::parse("1 + 1");
+    auto expression = calculator::Parser("1 + 1").parseExpression();
     calculator::CalculatorVisitor visitor;
     expression->accept(visitor);
     REQUIRE(visitor.result() == 2.0);
@@ -35,7 +35,7 @@ TEST_CASE("Should be able to calculate add function")
 
 TEST_CASE("Should be able to calculate min function")
 {
-    auto expression = calculator::parse("3 - 1");
+    auto expression = calculator::Parser("3 - 1").parseExpression();
     calculator::CalculatorVisitor visitor;
     expression->accept(visitor);
     REQUIRE(visitor.result() == 2.0);

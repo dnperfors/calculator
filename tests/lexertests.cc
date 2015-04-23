@@ -28,9 +28,11 @@
 
 calculator::token get_single_token(const std::string& input)
 {
-    calculator::iterator begin = input.begin();
-    calculator::iterator end = input.end();
-    return calculator::next_token(begin, end);
+    for(auto token : calculator::Lexer(input))
+    {
+        return token;
+    }
+    return calculator::token();
 }
 
 TEST_CASE("Should get single digit number token for numbers")
@@ -87,12 +89,11 @@ TEST_CASE("Should get single token for binary operators")
 TEST_CASE("Should ignore spaces between tokens")
 {
     std::string input(" 1 + 1 ");
-    calculator::iterator begin = input.begin();
-    calculator::iterator end = input.end();
-    auto token = calculator::next_token(begin, end);
-    CHECK(token.type == calculator::token::Number);
-    token = calculator::next_token(begin, end);
-    CHECK(token.type == calculator::token::Add);
-    token = calculator::next_token(begin, end);
-    CHECK(token.type == calculator::token::Number);
+    calculator::Lexer lexer(input);
+
+    CHECK((*lexer).type == calculator::token::Number);
+    ++lexer;
+    CHECK((*lexer).type == calculator::token::Add);
+    ++lexer;
+    CHECK((*lexer).type == calculator::token::Number);
 }

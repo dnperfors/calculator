@@ -26,6 +26,11 @@
 #include <debugexpressionvisitor.h>
 #include <parser.h>
 
+calculator::Expression_ptr parse(const std::string& input)
+{
+    return calculator::Parser(input).parseExpression();
+}
+
 std::string str(calculator::Expression_ptr expression)
 {
     calculator::DebugExpressionVisitor visitor;
@@ -35,23 +40,23 @@ std::string str(calculator::Expression_ptr expression)
 
 TEST_CASE("Should throw exception when expression is invalid")
 {
-    REQUIRE_THROWS_AS(calculator::parse(""), calculator::ParserException);
+    REQUIRE_THROWS_AS(parse(""), calculator::ParserException);
 }
 
 TEST_CASE("Should get correct expression from a number")
 {
-    CHECK(str(calculator::parse("0")) == "(NumberExpression: 0)");
-    CHECK(str(calculator::parse("100")) == "(NumberExpression: 100)");
-    CHECK(str(calculator::parse("101.13")) == "(NumberExpression: 101.13)");
+    CHECK(str(parse("0")) == "(NumberExpression: 0)");
+    CHECK(str(parse("100")) == "(NumberExpression: 100)");
+    CHECK(str(parse("101.13")) == "(NumberExpression: 101.13)");
 }
 
 TEST_CASE("Should get correct expression from multiple tokens")
 {
-    CHECK(str(calculator::parse(" 1 + 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1))");
-    CHECK(str(calculator::parse(" 1 - 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) - (NumberExpression: 1))");
+    CHECK(str(parse(" 1 + 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1))");
+    CHECK(str(parse(" 1 - 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) - (NumberExpression: 1))");
 }
 
 TEST_CASE("Should get correct precedence of expressions")
 {
-    CHECK(str(calculator::parse("1 + 1 - 1")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1)) - (NumberExpression: 1))");
+    CHECK(str(parse("1 + 1 - 1")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1)) - (NumberExpression: 1))");
 }

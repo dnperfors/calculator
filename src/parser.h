@@ -34,15 +34,13 @@ namespace calculator
     using prefixFunction = std::function<Expression_ptr(token)>;
     using infixFunction = std::function<Expression_ptr(Expression_ptr&, token)>;
 
-    Expression_ptr parse(const std::string& input);
-
     struct Parser
     {
-        Parser(std::queue<token> tokens);
+        Parser(const std::string& input);
         Expression_ptr parseExpression(int precedence = 0);
 
     private:
-        std::queue<token> tokens_;
+        calculator::Lexer lexer_;
         std::map<token::Type, prefixFunction> prefixParselets_;
         std::map<token::Type, infixFunction> infixParselets_;
 
