@@ -27,7 +27,9 @@ namespace calculator
 {
     std::map<char, token::Type> single_character_tokens {
         { '+', token::Add },
-        { '-', token::Minus }
+        { '-', token::Minus },
+        { '*', token::Multiply },
+        { '/', token::Divide },
     };
 
     Lexer::Lexer(const std::string& input)

@@ -50,6 +50,15 @@ namespace calculator
             case BinaryOperatorExpression::Minus:
                 result_ = left - right;
                 break;
+            case BinaryOperatorExpression::Multiply:
+                result_ = left * right;
+                break;
+            case BinaryOperatorExpression::Divide:
+                result_ = left / right;
+                break;
+            default:
+                result_ = 0;
+                break;
         }
     }
 }

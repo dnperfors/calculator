@@ -29,25 +29,12 @@ namespace calculator
     Parser::Parser(const std::string& input)
         : lexer_(input)
     {
-        prefixParselets_[token::Number] = std::bind(&Parser::numberParselet, this, std::placeholders::_1);
+        register_prefix(token::Number, &Parser::numberParselet);
 
-        infixParselets_[token::Add] = std::bind(&Parser::binaryOperatorParselet, this, std::placeholders::_1, std::placeholders::_2);
-        infixParselets_[token::Minus] = std::bind(&Parser::binaryOperatorParselet, this, std::placeholders::_1, std::placeholders::_2);
-    }
-
-    int Parser::get_precedence()
-    {
-        auto token = *lexer_;
-        if(infixParselets_[token.type])
-        {
-            switch(token.type)
-            {
-                case token::Add: return 3;
-                case token::Minus: return 3;
-                default: return 0;
-            }
-        }
-        return 0;
+        register_infix(token::Add, &Parser::binaryOperatorParselet, 1);
+        register_infix(token::Minus, &Parser::binaryOperatorParselet, 1);
+        register_infix(token::Multiply, &Parser::binaryOperatorParselet, 2);
+        register_infix(token::Divide, &Parser::binaryOperatorParselet, 2);
     }
 
     Expression_ptr Parser::parseExpression(int precedence)
@@ -62,7 +49,7 @@ namespace calculator
         }
         auto left = prefix(token);
 
-        while(precedence < get_precedence())
+        while(precedence < get_precedence((*lexer_).type))
         {
             token = *lexer_;
             ++lexer_;
@@ -71,6 +58,29 @@ namespace calculator
             left = infix(left, token);
         }
         return left;
+    }
+
+    int Parser::get_precedence(token::Type type)
+    {
+        auto precedence = infixPrecedence_.find(type);
+        if(precedence != infixPrecedence_.end())
+        {
+            return precedence->second;
+        }
+        return 0;
+    }
+
+    template<class F>
+    void Parser::register_prefix(token::Type type, F&& function)
+    {
+        prefixParselets_[type] = std::bind(function, this, std::placeholders::_1);
+    }
+
+    template<class F>
+    void Parser::register_infix(token::Type type, F&& function, int precedence)
+    {
+        infixParselets_[type] = std::bind(function, this, std::placeholders::_1, std::placeholders::_2);
+        infixPrecedence_[type] = precedence;
     }
 
     Expression_ptr Parser::numberParselet(token token)
@@ -86,13 +96,15 @@ namespace calculator
         {
             case token::Add: return BinaryOperatorExpression::Add;
             case token::Minus: return BinaryOperatorExpression::Minus;
+            case token::Multiply: return BinaryOperatorExpression::Multiply;
+            case token::Divide: return BinaryOperatorExpression::Divide;
             default: throw ParserException("Unsupported binary operator type.");
         }
     }
     Expression_ptr Parser::binaryOperatorParselet(Expression_ptr& left, token token)
     {
         BinaryOperatorExpression::Type type = convertType(token.type);
-        auto right = parseExpression(3);
+        auto right = parseExpression(get_precedence(token.type));
 
         return std::make_shared<BinaryOperatorExpression>(type, left, right);
     }

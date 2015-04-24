@@ -39,7 +39,9 @@ TEST_CASE("Should return string representation of an binary expression")
 {
     std::map<calculator::BinaryOperatorExpression::Type, std::string> testdata {
         { calculator::BinaryOperatorExpression::Add, "(BinaryOperatorExpression: (NumberExpression: 3.14) + (NumberExpression: 3.14))" },
-        { calculator::BinaryOperatorExpression::Minus, "(BinaryOperatorExpression: (NumberExpression: 3.14) - (NumberExpression: 3.14))" }
+        { calculator::BinaryOperatorExpression::Minus, "(BinaryOperatorExpression: (NumberExpression: 3.14) - (NumberExpression: 3.14))" },
+        { calculator::BinaryOperatorExpression::Multiply, "(BinaryOperatorExpression: (NumberExpression: 3.14) * (NumberExpression: 3.14))" },
+        { calculator::BinaryOperatorExpression::Divide, "(BinaryOperatorExpression: (NumberExpression: 3.14) / (NumberExpression: 3.14))" },
     };
     calculator::Expression_ptr left = std::make_shared<calculator::NumberExpression>(3.14);
     calculator::Expression_ptr right = std::make_shared<calculator::NumberExpression>(3.14);

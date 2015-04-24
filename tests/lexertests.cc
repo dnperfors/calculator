@@ -76,6 +76,8 @@ TEST_CASE("Should get single token for binary operators")
     std::map<std::string, calculator::token::Type> testdata { 
         { "+", calculator::token::Add },
         { "-", calculator::token::Minus },
+        { "*", calculator::token::Multiply },
+        { "/", calculator::token::Divide },
     };
 
     for(auto input : testdata)

@@ -40,3 +40,27 @@ TEST_CASE("Should be able to calculate min function")
     expression->accept(visitor);
     REQUIRE(visitor.result() == 2.0);
 }
+
+TEST_CASE("Should be able to calculate multiply function")
+{
+    auto expression = calculator::Parser("3 * 2").parseExpression();
+    calculator::CalculatorVisitor visitor;
+    expression->accept(visitor);
+    REQUIRE(visitor.result() == 6.0);
+}
+
+TEST_CASE("Should be able to calculate divide function")
+{
+    auto expression = calculator::Parser("4 / 2").parseExpression();
+    calculator::CalculatorVisitor visitor;
+    expression->accept(visitor);
+    REQUIRE(visitor.result() == 2.0);
+}
+
+TEST_CASE("Should be able to calculate complex functions")
+{
+    auto expression = calculator::Parser("1 + 3 * 2").parseExpression();
+    calculator::CalculatorVisitor visitor;
+    expression->accept(visitor);
+    REQUIRE(visitor.result() == 7.0);
+}

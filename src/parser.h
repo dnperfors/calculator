@@ -44,7 +44,12 @@ namespace calculator
         std::map<token::Type, prefixFunction> prefixParselets_;
         std::map<token::Type, infixFunction> infixParselets_;
 
-        int get_precedence();
+        std::map<token::Type, int> infixPrecedence_;
+        int get_precedence(token::Type type);
+        template<class F>
+        void register_prefix(token::Type, F&&);
+        template<class F>
+        void register_infix(token::Type, F&&, int);
     private:
         Expression_ptr numberParselet(token);
 
