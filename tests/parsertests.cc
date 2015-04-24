@@ -62,4 +62,5 @@ TEST_CASE("Should get correct precedence of expressions")
 {
     CHECK(str(parse("1 + 1 - 1")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1)) - (NumberExpression: 1))");
     CHECK(str(parse("1 + 1 * 1 - 1")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (BinaryOperatorExpression: (NumberExpression: 1) * (NumberExpression: 1))) - (NumberExpression: 1))");
+    CHECK(str(parse("(1 + 1) * (1 - 1)")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1)) * (BinaryOperatorExpression: (NumberExpression: 1) - (NumberExpression: 1)))");
 }

@@ -29,6 +29,7 @@ namespace calculator
     Parser::Parser(const std::string& input)
         : lexer_(input)
     {
+        register_prefix(token::LeftParantheses, &Parser::groupParselet);
         register_prefix(token::Number, &Parser::numberParselet);
 
         register_infix(token::Add, &Parser::binaryOperatorParselet, 1);
@@ -107,5 +108,15 @@ namespace calculator
         auto right = parseExpression(get_precedence(token.type));
 
         return std::make_shared<BinaryOperatorExpression>(type, left, right);
+    }
+
+    Expression_ptr Parser::groupParselet(token)
+    {
+        auto expression = parseExpression();
+        if((*lexer_).type == token::RightParantheses)
+        {
+            ++lexer_;
+        }
+        return expression;
     }
 }

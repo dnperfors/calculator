@@ -30,6 +30,8 @@ namespace calculator
         { '-', token::Minus },
         { '*', token::Multiply },
         { '/', token::Divide },
+        { '(', token::LeftParantheses },
+        { ')', token::RightParantheses },
     };
 
     Lexer::Lexer(const std::string& input)

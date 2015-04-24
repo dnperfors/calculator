@@ -88,6 +88,21 @@ TEST_CASE("Should get single token for binary operators")
     }
 }
 
+TEST_CASE("Should get single token for parantheses")
+{
+    std::map<std::string, calculator::token::Type> testdata { 
+        { "(", calculator::token::LeftParantheses },
+        { ")", calculator::token::RightParantheses },
+    };
+
+    for(auto input : testdata)
+    {
+        auto output = get_single_token(input.first);
+        CHECK(output.type == input.second);
+        CHECK(std::string(output.begin, output.end) == input.first);
+    }
+}
+
 TEST_CASE("Should ignore spaces between tokens")
 {
     std::string input(" 1 + 1 ");
