@@ -33,6 +33,7 @@ namespace calculator
     struct Expression
     {
         virtual void accept(ExpressionVisitor& visitor) = 0;
+        virtual std::string str() const = 0;
     };
 
     using Expression_ptr = std::shared_ptr<Expression>;
@@ -41,6 +42,7 @@ namespace calculator
     {
         NumberExpression (const double literal);
         void accept(ExpressionVisitor& visitor) override;
+        std::string str() const override;
         double value;
     };
 
@@ -50,6 +52,7 @@ namespace calculator
 
         BinaryOperatorExpression(Type op, Expression_ptr& left, Expression_ptr& right);
         void accept(ExpressionVisitor& visitor) override;
+        std::string str() const override;
         Type op;
         Expression_ptr left;
         Expression_ptr right;

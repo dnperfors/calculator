@@ -24,7 +24,6 @@
 
 #include <parser.h>
 #include <calculatorvisitor.h>
-#include <debugexpressionvisitor.h>
 
 int main(int, char**)
 {
@@ -41,10 +40,7 @@ int main(int, char**)
         }
         auto expression = calculator::Parser(input).parseExpression();
         
-        calculator::DebugExpressionVisitor debug;
-        expression->accept(debug);
-
-        std::cout << "Expression parsed as: " << debug.result() << std::endl;
+        std::cout << "Expression parsed as: " << expression->str() << std::endl;
 
         calculator::CalculatorVisitor visitor;
         expression->accept(visitor);

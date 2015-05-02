@@ -20,7 +20,6 @@
 
 set(LIBCALCULATOR_HEADERS
     expressions.h
-    debugexpressionvisitor.h
     lexer.h
     parser.h
 
@@ -29,7 +28,6 @@ set(LIBCALCULATOR_HEADERS
 
 set(LIBCALCULATOR_SOURCES
     expressions.cc
-    debugexpressionvisitor.cc
     lexer.cc
     parser.cc
 

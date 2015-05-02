@@ -23,19 +23,11 @@
 #include <catch.hpp>
 
 #include <expressions.h>
-#include <debugexpressionvisitor.h>
 #include <parser.h>
 
 calculator::Expression_ptr parse(const std::string& input)
 {
     return calculator::Parser(input).parseExpression();
-}
-
-std::string str(calculator::Expression_ptr expression)
-{
-    calculator::DebugExpressionVisitor visitor;
-    expression->accept(visitor);
-    return visitor.result();
 }
 
 TEST_CASE("Should throw exception when expression is invalid")
@@ -45,22 +37,22 @@ TEST_CASE("Should throw exception when expression is invalid")
 
 TEST_CASE("Should get correct expression from a number")
 {
-    CHECK(str(parse("0")) == "(NumberExpression: 0)");
-    CHECK(str(parse("100")) == "(NumberExpression: 100)");
-    CHECK(str(parse("101.13")) == "(NumberExpression: 101.13)");
+    CHECK(parse("0")->str() == "0");
+    CHECK(parse("100")->str() == "100");
+    CHECK(parse("101.13")->str() == "101.13");
 }
 
 TEST_CASE("Should get correct expression from multiple tokens")
 {
-    CHECK(str(parse(" 1 + 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1))");
-    CHECK(str(parse(" 1 - 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) - (NumberExpression: 1))");
-    CHECK(str(parse(" 1 * 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) * (NumberExpression: 1))");
-    CHECK(str(parse(" 1 / 1")) == "(BinaryOperatorExpression: (NumberExpression: 1) / (NumberExpression: 1))");
+    CHECK(parse(" 1 + 1")->str() == "(1 + 1)");
+    CHECK(parse(" 1 - 1")->str() == "(1 - 1)");
+    CHECK(parse(" 1 * 1")->str() == "(1 * 1)");
+    CHECK(parse(" 1 / 1")->str() == "(1 / 1)");
 }
 
 TEST_CASE("Should get correct precedence of expressions")
 {
-    CHECK(str(parse("1 + 1 - 1")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1)) - (NumberExpression: 1))");
-    CHECK(str(parse("1 + 1 * 1 - 1")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (BinaryOperatorExpression: (NumberExpression: 1) * (NumberExpression: 1))) - (NumberExpression: 1))");
-    CHECK(str(parse("(1 + 1) * (1 - 1)")) == "(BinaryOperatorExpression: (BinaryOperatorExpression: (NumberExpression: 1) + (NumberExpression: 1)) * (BinaryOperatorExpression: (NumberExpression: 1) - (NumberExpression: 1)))");
+    CHECK(parse("1 + 1 - 1")->str() == "((1 + 1) - 1)");
+    CHECK(parse("1 + 1 * 1 - 1")->str() == "((1 + (1 * 1)) - 1)");
+    CHECK(parse("(1 + 1) * (1 - 1)")->str() == "((1 + 1) * (1 - 1))");
 }

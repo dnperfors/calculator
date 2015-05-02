@@ -24,7 +24,6 @@ include_directories(SYSTEM
 
 set(CALCULATORTESTS_SOURCES
     expressionstests.cc
-    debugexpressionvisitortests.cc
     lexertests.cc
     parsertests.cc
 

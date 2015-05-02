@@ -102,6 +102,7 @@ namespace calculator
             default: throw ParserException("Unsupported binary operator type.");
         }
     }
+
     Expression_ptr Parser::binaryOperatorParselet(Expression_ptr& left, token token)
     {
         BinaryOperatorExpression::Type type = convertType(token.type);

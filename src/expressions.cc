@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+#include <map>
 #include "expressions.h"
 
 namespace calculator
@@ -34,6 +35,13 @@ namespace calculator
         visitor.visit(*this);
     }
 
+    std::string NumberExpression::str() const
+    {
+        std::stringstream s;
+        s << value;
+        return s.str();
+    }
+
     BinaryOperatorExpression::BinaryOperatorExpression(Type op, Expression_ptr& left, Expression_ptr& right)
         : op(op), left(left), right(right)
     {
@@ -42,5 +50,19 @@ namespace calculator
     void BinaryOperatorExpression::accept(ExpressionVisitor& visitor)
     {
         visitor.visit(*this);
+    }
+
+    const std::map<BinaryOperatorExpression::Type, char> op_text_map {
+        { BinaryOperatorExpression::Add, '+' },
+        { BinaryOperatorExpression::Minus, '-' },
+        { BinaryOperatorExpression::Multiply, '*' },
+        { BinaryOperatorExpression::Divide, '/' },
+    };
+
+    std::string BinaryOperatorExpression::str() const
+    {
+        std::stringstream s;
+        s << "(" << left->str() << " " << op_text_map.at(op) << " " << right->str() << ")";
+        return s.str();
     }
 }
