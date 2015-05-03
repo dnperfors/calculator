@@ -27,7 +27,7 @@ namespace calculator
 {
     std::map<char, token::Type> single_character_tokens {
         { '+', token::Add },
-        { '-', token::Minus },
+        { '-', token::Subtract },
         { '*', token::Multiply },
         { '/', token::Divide },
         { '(', token::LeftParantheses },

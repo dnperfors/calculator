@@ -35,72 +35,46 @@ calculator::token get_single_token(const std::string& input)
     return calculator::token();
 }
 
-TEST_CASE("Should get single digit number token for numbers")
+void check_single_token(const std::string& input, calculator::token::Type expectedType)
 {
-    std::vector<std::string> testdata { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+    auto output = get_single_token(input);
+    CHECK(output.type == expectedType);
+    CHECK(std::string(output.begin, output.end) == input);
+}
 
+void check_multiple_tokens(const std::vector<std::string> testdata, calculator::token::Type expectedType)
+{
     for(std::string input : testdata)
     {
-        auto output = get_single_token(input);
-        CHECK(output.type == calculator::token::Number);
-        CHECK(std::string(output.begin, output.end) == input);
+        check_single_token(input, expectedType);
     }
 }
 
-TEST_CASE("Should get single token for multiple digits")
+void check_multiple_tokens(const std::map<std::string, calculator::token::Type> testdata)
 {
-    std::vector<std::string> testdata { "99", "412", "987321654" };
-
-    for(std::string input : testdata)
+    for(auto input : testdata)
     {
-        auto output = get_single_token(input);
-        CHECK(output.type == calculator::token::Number);
-        CHECK(std::string(output.begin, output.end) == input);
+        check_single_token(input.first, input.second);
     }
 }
 
-TEST_CASE("Should get single token for numbers with decimal point")
+TEST_CASE("Should get Number token for different kind of numbers")
 {
-    std::vector<std::string> testdata { "1.25", "3.14" };
-
-    for(std::string input : testdata)
-    {
-        auto output = get_single_token(input);
-        CHECK(output.type == calculator::token::Number);
-        CHECK(std::string(output.begin, output.end) == input);
-    }
+    check_multiple_tokens({ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }, calculator::token::Number);
+    check_multiple_tokens({ "99", "412", "987321654" }, calculator::token::Number);
+    check_multiple_tokens({ "1.25", "3.14" }, calculator::token::Number);
 }
 
-TEST_CASE("Should get single token for binary operators")
+TEST_CASE("Should get correct token for single character operators")
 {
-    std::map<std::string, calculator::token::Type> testdata { 
+    check_multiple_tokens({ 
         { "+", calculator::token::Add },
-        { "-", calculator::token::Minus },
+        { "-", calculator::token::Subtract },
         { "*", calculator::token::Multiply },
         { "/", calculator::token::Divide },
-    };
-
-    for(auto input : testdata)
-    {
-        auto output = get_single_token(input.first);
-        CHECK(output.type == input.second);
-        CHECK(std::string(output.begin, output.end) == input.first);
-    }
-}
-
-TEST_CASE("Should get single token for parantheses")
-{
-    std::map<std::string, calculator::token::Type> testdata { 
         { "(", calculator::token::LeftParantheses },
         { ")", calculator::token::RightParantheses },
-    };
-
-    for(auto input : testdata)
-    {
-        auto output = get_single_token(input.first);
-        CHECK(output.type == input.second);
-        CHECK(std::string(output.begin, output.end) == input.first);
-    }
+    });
 }
 
 TEST_CASE("Should ignore spaces between tokens")

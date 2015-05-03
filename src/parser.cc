@@ -33,7 +33,7 @@ namespace calculator
         register_prefix(token::Number, &Parser::numberParselet);
 
         register_infix(token::Add, &Parser::binaryOperatorParselet, 1);
-        register_infix(token::Minus, &Parser::binaryOperatorParselet, 1);
+        register_infix(token::Subtract, &Parser::binaryOperatorParselet, 1);
         register_infix(token::Multiply, &Parser::binaryOperatorParselet, 2);
         register_infix(token::Divide, &Parser::binaryOperatorParselet, 2);
     }
@@ -96,7 +96,7 @@ namespace calculator
         switch(type)
         {
             case token::Add: return BinaryOperatorExpression::Add;
-            case token::Minus: return BinaryOperatorExpression::Minus;
+            case token::Subtract: return BinaryOperatorExpression::Subtract;
             case token::Multiply: return BinaryOperatorExpression::Multiply;
             case token::Divide: return BinaryOperatorExpression::Divide;
             default: throw ParserException("Unsupported binary operator type.");

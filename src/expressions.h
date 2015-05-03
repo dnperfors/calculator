@@ -48,7 +48,7 @@ namespace calculator
 
     struct BinaryOperatorExpression : Expression
     {
-        enum Type { Add, Minus, Multiply, Divide };
+        enum Type { Add, Subtract, Multiply, Divide };
 
         BinaryOperatorExpression(Type op, Expression_ptr& left, Expression_ptr& right);
         void accept(ExpressionVisitor& visitor) override;

@@ -30,7 +30,7 @@ typedef std::string::const_iterator iterator;
 
 struct token
 {
-    enum Type { EndOfFile, Number, Add, Minus, Multiply, Divide, LeftParantheses, RightParantheses };
+    enum Type { EndOfFile, Number, Add, Subtract, Multiply, Divide, LeftParantheses, RightParantheses };
 
     token() :type(EndOfFile), begin(), end() {}
     token(Type type, iterator& it1, iterator it2)

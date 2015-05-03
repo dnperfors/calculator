@@ -47,7 +47,7 @@ namespace calculator
             case BinaryOperatorExpression::Add:
                 result_ = left + right;
                 break;
-            case BinaryOperatorExpression::Minus:
+            case BinaryOperatorExpression::Subtract:
                 result_ = left - right;
                 break;
             case BinaryOperatorExpression::Multiply:

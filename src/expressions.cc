@@ -54,7 +54,7 @@ namespace calculator
 
     const std::map<BinaryOperatorExpression::Type, char> op_text_map {
         { BinaryOperatorExpression::Add, '+' },
-        { BinaryOperatorExpression::Minus, '-' },
+        { BinaryOperatorExpression::Subtract, '-' },
         { BinaryOperatorExpression::Multiply, '*' },
         { BinaryOperatorExpression::Divide, '/' },
     };

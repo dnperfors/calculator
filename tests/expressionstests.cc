@@ -42,7 +42,7 @@ TEST_CASE("OperatorExpression should show correct str")
 {
     std::map<calculator::BinaryOperatorExpression::Type, std::string> testdata { 
         { calculator::BinaryOperatorExpression::Add, "(1 + 1)" },
-        { calculator::BinaryOperatorExpression::Minus, "(1 - 1)" },
+        { calculator::BinaryOperatorExpression::Subtract, "(1 - 1)" },
         { calculator::BinaryOperatorExpression::Multiply, "(1 * 1)" },
         { calculator::BinaryOperatorExpression::Divide, "(1 / 1)" },
     };
@@ -80,7 +80,7 @@ TEST_CASE("OperatorExpression should show correct str with multiple expressions 
     calculator::Expression_ptr left = std::make_unique<calculator::BinaryOperatorExpression>(calculator::BinaryOperatorExpression::Add, leftFirst, leftSecond);
     calculator::Expression_ptr rightFirst = std::make_unique<calculator::NumberExpression>(2);
     calculator::Expression_ptr rightSecond = std::make_unique<calculator::NumberExpression>(1);
-    calculator::Expression_ptr right = std::make_unique<calculator::BinaryOperatorExpression>(calculator::BinaryOperatorExpression::Minus, rightFirst, rightSecond);
+    calculator::Expression_ptr right = std::make_unique<calculator::BinaryOperatorExpression>(calculator::BinaryOperatorExpression::Subtract, rightFirst, rightSecond);
     auto expression = std::make_unique<calculator::BinaryOperatorExpression>(calculator::BinaryOperatorExpression::Multiply, left, right);
     CHECK(expression->str() == "((1 + 1) * (2 - 1))");
 
