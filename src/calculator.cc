@@ -21,6 +21,8 @@
  */
 
 #include <iostream>
+#include <map>
+#include <string>
 
 #include <parser.h>
 #include <calculatorvisitor.h>
@@ -28,6 +30,7 @@
 int main(int, char**)
 {
     std::cout << "Welcome to calculator, please enter your expression" << std::endl;
+    std::map<std::string, double> variableMap;
     while(true)
     {
         std::string input;
@@ -42,7 +45,7 @@ int main(int, char**)
         
         std::cout << "Expression parsed as: " << expression->str() << std::endl;
 
-        calculator::CalculatorVisitor visitor;
+        calculator::CalculatorVisitor visitor(variableMap);
         expression->accept(visitor);
 
         std::cout << "Result: " << visitor.result() << std::endl;

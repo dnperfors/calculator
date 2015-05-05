@@ -52,6 +52,8 @@ namespace calculator
         void register_infix(token::Type, F&&, int);
     private:
         Expression_ptr numberParselet(token);
+        Expression_ptr identifierParselet(token);
+        Expression_ptr assignmentParselet(Expression_ptr&, token);
         Expression_ptr binaryOperatorParselet(Expression_ptr&, token);
         Expression_ptr groupParselet(token);
     };

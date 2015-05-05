@@ -42,17 +42,38 @@ TEST_CASE("Should get correct expression from a number")
     CHECK(parse("101.13")->str() == "101.13");
 }
 
+TEST_CASE("Should get correct expression from identifier")
+{
+    CHECK(parse("x")->str() == "x");
+    CHECK(parse("x1")->str() == "x1");
+    CHECK(parse("_it")->str() == "_it");
+}
+
 TEST_CASE("Should get correct expression from multiple tokens")
 {
-    CHECK(parse(" 1 + 1")->str() == "(1 + 1)");
-    CHECK(parse(" 1 - 1")->str() == "(1 - 1)");
-    CHECK(parse(" 1 * 1")->str() == "(1 * 1)");
-    CHECK(parse(" 1 / 1")->str() == "(1 / 1)");
+    CHECK(parse(" x + 1")->str() == "(x + 1)");
+    CHECK(parse(" y - 1")->str() == "(y - 1)");
+    CHECK(parse(" x * 1")->str() == "(x * 1)");
+    CHECK(parse(" y / 1")->str() == "(y / 1)");
+    CHECK(parse("3 % 2")->str() == "(3 % 2)");
 }
 
 TEST_CASE("Should get correct precedence of expressions")
 {
     CHECK(parse("1 + 1 - 1")->str() == "((1 + 1) - 1)");
+    CHECK(parse("1 - 1 + 1")->str() == "((1 - 1) + 1)");
+    CHECK(parse("1 + 1 * 1")->str() == "(1 + (1 * 1))");
+    CHECK(parse("1 + 1 / 1")->str() == "(1 + (1 / 1))");
+    CHECK(parse("1 + 1 % 1")->str() == "(1 + (1 % 1))");
+    CHECK(parse("1 * 1 - 1")->str() == "((1 * 1) - 1)");
+    CHECK(parse("1 / 1 - 1")->str() == "((1 / 1) - 1)");
+    CHECK(parse("1 % 1 - 1")->str() == "((1 % 1) - 1)");
+
     CHECK(parse("1 + 1 * 1 - 1")->str() == "((1 + (1 * 1)) - 1)");
     CHECK(parse("(1 + 1) * (1 - 1)")->str() == "((1 + 1) * (1 - 1))");
+}
+
+TEST_CASE("Should get correct expression for assignment")
+{
+    CHECK(parse("x = 1 + 1")->str() == "x = (1 + 1)");
 }

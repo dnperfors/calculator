@@ -24,18 +24,23 @@
 #define _CALCULATOR_CALCULATORVISITOR_H_
 
 #include "expressions.h"
+#include <string>
+#include <map>
 
 namespace calculator
 {
     struct CalculatorVisitor : ExpressionVisitor
     {
-        CalculatorVisitor();
+        CalculatorVisitor(std::map<std::string, double>&);
         void visit(NumberExpression&);
+        void visit(IdentifierExpression&);
+        void visit(AssignmentExpression&);
         void visit(BinaryOperatorExpression&);
 
-        double result() { return result_; }
+        double result() const { return result_; }
     private:
         double result_;
+        std::map<std::string, double>& variables_;
     };
 }
 

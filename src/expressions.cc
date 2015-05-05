@@ -42,6 +42,38 @@ namespace calculator
         return s.str();
     }
 
+    IdentifierExpression::IdentifierExpression(const std::string& identifier)
+        : value(identifier)
+    {
+    }
+
+    void IdentifierExpression::accept(ExpressionVisitor& visitor)
+    {
+        visitor.visit(*this);
+    }
+
+    std::string IdentifierExpression::str() const
+    {
+        return value;
+    }
+
+    AssignmentExpression::AssignmentExpression(Expression_ptr& left, Expression_ptr& right)
+        : left(left), right(right)
+    {
+    }
+
+    std::string AssignmentExpression::str() const
+    {
+        std::stringstream s;
+        s << left->str() << " = " << right->str();
+        return s.str();
+    }
+
+    void AssignmentExpression::accept(ExpressionVisitor& visitor)
+    {
+        visitor.visit(*this);
+    }
+
     BinaryOperatorExpression::BinaryOperatorExpression(Type op, Expression_ptr& left, Expression_ptr& right)
         : op(op), left(left), right(right)
     {
@@ -57,6 +89,7 @@ namespace calculator
         { BinaryOperatorExpression::Subtract, '-' },
         { BinaryOperatorExpression::Multiply, '*' },
         { BinaryOperatorExpression::Divide, '/' },
+        { BinaryOperatorExpression::Modulo, '%' },
     };
 
     std::string BinaryOperatorExpression::str() const

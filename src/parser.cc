@@ -31,11 +31,15 @@ namespace calculator
     {
         register_prefix(token::LeftParantheses, &Parser::groupParselet);
         register_prefix(token::Number, &Parser::numberParselet);
+        register_prefix(token::Identifier, &Parser::identifierParselet);
 
-        register_infix(token::Add, &Parser::binaryOperatorParselet, 1);
-        register_infix(token::Subtract, &Parser::binaryOperatorParselet, 1);
-        register_infix(token::Multiply, &Parser::binaryOperatorParselet, 2);
-        register_infix(token::Divide, &Parser::binaryOperatorParselet, 2);
+        int precedence = 0;
+        register_infix(token::Assign, &Parser::assignmentParselet, ++precedence);
+        register_infix(token::Add, &Parser::binaryOperatorParselet, ++precedence);
+        register_infix(token::Subtract, &Parser::binaryOperatorParselet, precedence);
+        register_infix(token::Multiply, &Parser::binaryOperatorParselet, ++precedence);
+        register_infix(token::Divide, &Parser::binaryOperatorParselet, precedence);
+        register_infix(token::Modulo, &Parser::binaryOperatorParselet, precedence);
     }
 
     Expression_ptr Parser::parseExpression(int precedence)
@@ -91,6 +95,18 @@ namespace calculator
         return std::make_shared<NumberExpression>(number);
     }
 
+    Expression_ptr Parser::identifierParselet(token token)
+    {
+        std::string value(token.begin, token.end);
+        return std::make_shared<IdentifierExpression>(value);
+    }
+
+    Expression_ptr Parser::assignmentParselet(Expression_ptr& left, token)
+    {
+        auto right = parseExpression();
+        return std::make_shared<AssignmentExpression>(left, right);
+    }
+
     BinaryOperatorExpression::Type convertType(token::Type type)
     {
         switch(type)
@@ -99,6 +115,7 @@ namespace calculator
             case token::Subtract: return BinaryOperatorExpression::Subtract;
             case token::Multiply: return BinaryOperatorExpression::Multiply;
             case token::Divide: return BinaryOperatorExpression::Divide;
+            case token::Modulo: return BinaryOperatorExpression::Modulo;
             default: throw ParserException("Unsupported binary operator type.");
         }
     }

@@ -28,7 +28,8 @@
 TEST_CASE("Should be able to calculate add function")
 {
     auto expression = calculator::Parser("1 + 1").parseExpression();
-    calculator::CalculatorVisitor visitor;
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
     expression->accept(visitor);
     REQUIRE(visitor.result() == 2.0);
 }
@@ -36,7 +37,8 @@ TEST_CASE("Should be able to calculate add function")
 TEST_CASE("Should be able to calculate min function")
 {
     auto expression = calculator::Parser("3 - 1").parseExpression();
-    calculator::CalculatorVisitor visitor;
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
     expression->accept(visitor);
     REQUIRE(visitor.result() == 2.0);
 }
@@ -44,7 +46,8 @@ TEST_CASE("Should be able to calculate min function")
 TEST_CASE("Should be able to calculate multiply function")
 {
     auto expression = calculator::Parser("3 * 2").parseExpression();
-    calculator::CalculatorVisitor visitor;
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
     expression->accept(visitor);
     REQUIRE(visitor.result() == 6.0);
 }
@@ -52,15 +55,65 @@ TEST_CASE("Should be able to calculate multiply function")
 TEST_CASE("Should be able to calculate divide function")
 {
     auto expression = calculator::Parser("4 / 2").parseExpression();
-    calculator::CalculatorVisitor visitor;
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
     expression->accept(visitor);
     REQUIRE(visitor.result() == 2.0);
+}
+
+TEST_CASE("Should be able to calculate modulo function")
+{
+    auto expression = calculator::Parser("4 % 3").parseExpression();
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
+    expression->accept(visitor);
+    REQUIRE(visitor.result() == 1.0);
 }
 
 TEST_CASE("Should be able to calculate complex functions")
 {
     auto expression = calculator::Parser("1 + 3 * 2").parseExpression();
-    calculator::CalculatorVisitor visitor;
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
     expression->accept(visitor);
     REQUIRE(visitor.result() == 7.0);
+}
+
+TEST_CASE("Should register identifiers")
+{
+    auto expression = calculator::Parser("a").parseExpression();
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
+    expression->accept(visitor);
+    CHECK(variableMap.size() == 1);
+    CHECK(variableMap.at("a") == 0);
+}
+
+TEST_CASE("Should not register identifier twice")
+{
+    auto expression = calculator::Parser("a+a").parseExpression();
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
+    expression->accept(visitor);
+    CHECK(variableMap.size() == 1);
+    CHECK(variableMap.at("a") == 0);
+}
+
+TEST_CASE("Shoud get correct value when variable has value")
+{
+    auto expression = calculator::Parser("a+a").parseExpression();
+    std::map<std::string, double> variableMap;
+    variableMap["a"] = 1;
+    calculator::CalculatorVisitor visitor(variableMap);
+    expression->accept(visitor);
+    REQUIRE(visitor.result() == 2.0);
+}
+
+TEST_CASE("Should assign value to variable")
+{
+    auto expression = calculator::Parser("a = 1").parseExpression();
+    std::map<std::string, double> variableMap;
+    calculator::CalculatorVisitor visitor(variableMap);
+    expression->accept(visitor);
+    REQUIRE(variableMap["a"] == 1.0);
 }

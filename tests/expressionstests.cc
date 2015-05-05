@@ -38,6 +38,26 @@ TEST_CASE("NumberExpression should have correct data")
     CHECK(calculator::NumberExpression(3.14).value == 3.14);
 }
 
+TEST_CASE("IdentifierExpression should show correct str")
+{
+    CHECK(calculator::IdentifierExpression("x").str() == "x");
+    CHECK(calculator::IdentifierExpression("x1").str() == "x1");
+    CHECK(calculator::IdentifierExpression("_id").str() == "_id");
+}
+TEST_CASE("IdentifierExpression should have correct data")
+{
+    CHECK(calculator::IdentifierExpression("x").value == "x");
+    CHECK(calculator::IdentifierExpression("x1").value == "x1");
+    CHECK(calculator::IdentifierExpression("_id").value == "_id");
+}
+TEST_CASE("AssignmentExpression should show correct str")
+{
+    calculator::Expression_ptr left = std::make_unique<calculator::IdentifierExpression>("x");
+    calculator::Expression_ptr right = std::make_unique<calculator::NumberExpression>(1);
+    calculator::AssignmentExpression expression(left, right);
+    CHECK(expression.str() == "x = 1");
+}
+
 TEST_CASE("OperatorExpression should show correct str")
 {
     std::map<calculator::BinaryOperatorExpression::Type, std::string> testdata { 

@@ -46,9 +46,26 @@ namespace calculator
         double value;
     };
 
+    struct IdentifierExpression : Expression
+    {
+        IdentifierExpression(const std::string& name);
+        void accept(ExpressionVisitor& visitor) override;
+        std::string str() const override;
+        std::string value;
+    };
+
+    struct AssignmentExpression : Expression
+    {
+        AssignmentExpression(Expression_ptr& left, Expression_ptr& right);
+        void accept(ExpressionVisitor& visitor) override;
+        std::string str() const override;
+        Expression_ptr left;
+        Expression_ptr right;
+    };
+
     struct BinaryOperatorExpression : Expression
     {
-        enum Type { Add, Subtract, Multiply, Divide };
+        enum Type { Add, Subtract, Multiply, Divide, Modulo };
 
         BinaryOperatorExpression(Type op, Expression_ptr& left, Expression_ptr& right);
         void accept(ExpressionVisitor& visitor) override;
@@ -61,6 +78,8 @@ namespace calculator
     struct ExpressionVisitor
     {
         virtual void visit(NumberExpression& expression) = 0;
+        virtual void visit(IdentifierExpression& expression) = 0;
+        virtual void visit(AssignmentExpression& expression) = 0;
         virtual void visit(BinaryOperatorExpression& expression) = 0;
     };
 }

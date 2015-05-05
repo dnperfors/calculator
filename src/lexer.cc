@@ -26,10 +26,12 @@
 namespace calculator
 {
     std::map<char, token::Type> single_character_tokens {
+        { '=', token::Assign },
         { '+', token::Add },
         { '-', token::Subtract },
         { '*', token::Multiply },
         { '/', token::Divide },
+        { '%', token::Modulo },
         { '(', token::LeftParantheses },
         { ')', token::RightParantheses },
     };
@@ -63,25 +65,51 @@ namespace calculator
     token Lexer::next_token()
     {
         iterator it = iterator_;
-        if(*it == ' ')
+        if(is_character(' '))
         {
             ++it;
             ++iterator_;
         }
-        if(single_character_tokens.find(*it) != single_character_tokens.end())
+        if(single_character_tokens.find(*iterator_) != single_character_tokens.end())
         {
             ++iterator_;
             return token(single_character_tokens.at(*it), it, iterator_); 
         }
-        if(*iterator_ >= '0' && *iterator_ <= '9')
+        if(is_digit())
         {
             do
             {
                 ++iterator_;
             }
-            while((*iterator_ >= '0' && *iterator_ <= '9') || *iterator_ == '.');
+            while(is_digit() || is_character('.'));
             return token(token::Number, it, iterator_);
         }
+        if(is_alpha() || is_character('_'))
+        {
+            do
+            {
+                ++iterator_;
+            }
+            while(is_alpha() || is_digit() || is_character('_'));
+            return token(token::Identifier, it, iterator_);
+        }
         return token();
+    }
+    
+    bool Lexer::is_character(char c)
+    {
+        return *iterator_ == c;
+    }
+
+    bool Lexer::is_digit()
+    {
+        return (*iterator_ >= '0' && *iterator_ <= '9');
+    }
+    
+    bool Lexer::is_alpha()
+    {
+        return
+            (*iterator_ >= 'A' && *iterator_ <= 'Z') ||
+            (*iterator_ >= 'a' && *iterator_ <= 'z');
     }
 }

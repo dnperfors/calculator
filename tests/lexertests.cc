@@ -42,7 +42,7 @@ void check_single_token(const std::string& input, calculator::token::Type expect
     CHECK(std::string(output.begin, output.end) == input);
 }
 
-void check_multiple_tokens(const std::vector<std::string> testdata, calculator::token::Type expectedType)
+void check_multiple_tokens(const std::vector<std::string>& testdata, calculator::token::Type expectedType)
 {
     for(std::string input : testdata)
     {
@@ -50,7 +50,7 @@ void check_multiple_tokens(const std::vector<std::string> testdata, calculator::
     }
 }
 
-void check_multiple_tokens(const std::map<std::string, calculator::token::Type> testdata)
+void check_multiple_tokens(const std::map<std::string, calculator::token::Type>& testdata)
 {
     for(auto input : testdata)
     {
@@ -65,13 +65,23 @@ TEST_CASE("Should get Number token for different kind of numbers")
     check_multiple_tokens({ "1.25", "3.14" }, calculator::token::Number);
 }
 
+TEST_CASE("Should get Identifier token for different kind of identifiers")
+{
+    check_multiple_tokens({ "x", "y", "i", "c", "X", "Y", "Z", "A" }, calculator::token::Identifier);
+    check_multiple_tokens({ "abc", "xyz", "test", "Expect", "xYz" }, calculator::token::Identifier);
+    check_multiple_tokens({ "x1", "x2" }, calculator::token::Identifier);
+    check_multiple_tokens({ "_", "_test", "test_" }, calculator::token::Identifier);
+}
+
 TEST_CASE("Should get correct token for single character operators")
 {
     check_multiple_tokens({ 
+        { "=", calculator::token::Assign },
         { "+", calculator::token::Add },
         { "-", calculator::token::Subtract },
         { "*", calculator::token::Multiply },
         { "/", calculator::token::Divide },
+        { "%", calculator::token::Modulo },
         { "(", calculator::token::LeftParantheses },
         { ")", calculator::token::RightParantheses },
     });

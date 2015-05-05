@@ -21,11 +21,12 @@
  */
 
 #include "calculatorvisitor.h"
+#include <cmath>
 
 namespace calculator
 {
-    CalculatorVisitor::CalculatorVisitor()
-        :result_(0)
+    CalculatorVisitor::CalculatorVisitor(std::map<std::string, double>& variableMap)
+        :result_(0), variables_(variableMap)
     {
     }
 
@@ -34,12 +35,29 @@ namespace calculator
         result_ = expression.value;
     }
 
+    void CalculatorVisitor::visit(IdentifierExpression& expression)
+    {
+        result_ = variables_[expression.value];
+    }
+
+    void CalculatorVisitor::visit(AssignmentExpression& expression)
+    {
+        IdentifierExpression* left = static_cast<IdentifierExpression*>(expression.left.get());
+        std::string identifier = left->value;
+
+        CalculatorVisitor visitorRight(variables_);
+        expression.right->accept(visitorRight);
+        float right = visitorRight.result();
+
+        variables_[identifier] = right;
+    }
+
     void CalculatorVisitor::visit(BinaryOperatorExpression& expression)
     {
-        CalculatorVisitor visitorLeft;
+        CalculatorVisitor visitorLeft(variables_);
         expression.left->accept(visitorLeft);
         float left = visitorLeft.result();
-        CalculatorVisitor visitorRight;
+        CalculatorVisitor visitorRight(variables_);
         expression.right->accept(visitorRight);
         float right = visitorRight.result();
         switch(expression.op)
@@ -55,6 +73,9 @@ namespace calculator
                 break;
             case BinaryOperatorExpression::Divide:
                 result_ = left / right;
+                break;
+            case BinaryOperatorExpression::Modulo:
+                result_ = fmod(left, right);
                 break;
             default:
                 result_ = 0;
