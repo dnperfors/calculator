@@ -90,14 +90,14 @@ namespace calculator
 
     Expression_ptr Parser::numberParselet(token token)
     {
-        std::string value(token.begin, token.end);
+        std::string value(token.value);
         double number = std::atof(value.c_str());
         return std::make_shared<NumberExpression>(number);
     }
 
     Expression_ptr Parser::identifierParselet(token token)
     {
-        std::string value(token.begin, token.end);
+        std::string value(token.value);
         return std::make_shared<IdentifierExpression>(value);
     }
 

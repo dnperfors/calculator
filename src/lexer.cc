@@ -20,24 +20,29 @@
  * THE SOFTWARE.
  */
 
-#include <map>
+#include <vector>
+#include <utility>
+#include <regex>
 #include "lexer.h"
 
 namespace calculator
 {
-    std::map<char, token::Type> single_character_tokens {
-        { '=', token::Assign },
-        { '+', token::Add },
-        { '-', token::Subtract },
-        { '*', token::Multiply },
-        { '/', token::Divide },
-        { '%', token::Modulo },
-        { '(', token::LeftParantheses },
-        { ')', token::RightParantheses },
+    std::vector<std::pair<std::regex, token::Type>> regex_table {
+        { std::regex("^([a-zA-Z_][_[:alnum:]]*)"), token::Identifier },
+        { std::regex("^(\\=)"), token::Assign },
+        { std::regex("^([[:digit:]]+(.[[:digit:]]+)?)"), token::Number },
+        { std::regex("^(\\+)"), token::Add },
+        { std::regex("^(\\-)"), token::Subtract },
+        { std::regex("^(\\*)"), token::Multiply },
+        { std::regex("^(\\/)"), token::Divide },
+        { std::regex("^(\\%)"), token::Modulo },
+        { std::regex("^(\\()"), token::LeftParantheses },
+        { std::regex("^(\\))"), token::RightParantheses },
+        { std::regex("^([[:space:]]+)"), token::WhiteSpace },
     };
 
     Lexer::Lexer(const std::string& input)
-        : iterator_(input.begin())
+        : input_(input)
     {
         advance();
     }
@@ -60,56 +65,24 @@ namespace calculator
     void Lexer::advance()
     {
         current_ = next_token();
+        if (current_.type == token::WhiteSpace)
+        {
+            advance();
+        }
     }
 
     token Lexer::next_token()
     {
-        iterator it = iterator_;
-        if(is_character(' '))
+        for(auto regex : regex_table)
         {
-            ++it;
-            ++iterator_;
-        }
-        if(single_character_tokens.find(*iterator_) != single_character_tokens.end())
-        {
-            ++iterator_;
-            return token(single_character_tokens.at(*it), it, iterator_); 
-        }
-        if(is_digit())
-        {
-            do
+            std::smatch base_match;
+            if(std::regex_search(input_, base_match, regex.first))
             {
-                ++iterator_;
+                std::string value = base_match[0].str();
+                input_ = input_.substr(value.size(), input_.size() - value.size());
+                return token(regex.second, value);
             }
-            while(is_digit() || is_character('.'));
-            return token(token::Number, it, iterator_);
-        }
-        if(is_alpha() || is_character('_'))
-        {
-            do
-            {
-                ++iterator_;
-            }
-            while(is_alpha() || is_digit() || is_character('_'));
-            return token(token::Identifier, it, iterator_);
         }
         return token();
-    }
-    
-    bool Lexer::is_character(char c)
-    {
-        return *iterator_ == c;
-    }
-
-    bool Lexer::is_digit()
-    {
-        return (*iterator_ >= '0' && *iterator_ <= '9');
-    }
-    
-    bool Lexer::is_alpha()
-    {
-        return
-            (*iterator_ >= 'A' && *iterator_ <= 'Z') ||
-            (*iterator_ >= 'a' && *iterator_ <= 'z');
     }
 }

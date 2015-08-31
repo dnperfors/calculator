@@ -26,19 +26,16 @@
 #include <string>
 namespace calculator
 {
-typedef std::string::const_iterator iterator;
-
 struct token
 {
-    enum Type { EndOfFile, Identifier, Assign, Number, Add, Subtract, Multiply, Divide, Modulo, LeftParantheses, RightParantheses };
+    enum Type { EndOfFile, Identifier, Assign, Number, Add, Subtract, Multiply, Divide, Modulo, LeftParantheses, RightParantheses, WhiteSpace };
 
-    token() :type(EndOfFile), begin(), end() {}
-    token(Type type, iterator& it1, iterator it2)
-        :type(type), begin(it1), end(it2){}
+    token() :type(EndOfFile), value("")  {}
+    token(Type type, std::string& value)
+        :type(type), value(value) {}
 
     Type type;
-    iterator begin;
-    iterator end;
+    std::string value;
 };
 
 class Lexer
@@ -54,10 +51,7 @@ public:
 private:
     void advance();
     token next_token();
-    bool is_character(char c);
-    bool is_digit();
-    bool is_alpha();
-    iterator iterator_;
+    std::string input_;
     token current_;
 };
 

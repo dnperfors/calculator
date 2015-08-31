@@ -39,7 +39,7 @@ void check_single_token(const std::string& input, calculator::token::Type expect
 {
     auto output = get_single_token(input);
     CHECK(output.type == expectedType);
-    CHECK(std::string(output.begin, output.end) == input);
+    CHECK(output.value == input);
 }
 
 void check_multiple_tokens(const std::vector<std::string>& testdata, calculator::token::Type expectedType)
