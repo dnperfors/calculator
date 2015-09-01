@@ -24,6 +24,8 @@
 #define _CALCULATOR_LEXER_H_
 
 #include <string>
+#include <regex>
+#include <vector>
 namespace calculator
 {
 struct token
@@ -51,8 +53,10 @@ public:
 private:
     void advance();
     token next_token();
+    void register_token(const std::string&, token::Type);
     std::string input_;
     token current_;
+    std::vector<std::pair<std::regex, token::Type>> regex_table_;
 };
 
 }

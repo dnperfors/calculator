@@ -20,30 +20,24 @@
  * THE SOFTWARE.
  */
 
-#include <vector>
-#include <utility>
-#include <regex>
 #include "lexer.h"
 
 namespace calculator
 {
-    std::vector<std::pair<std::regex, token::Type>> regex_table {
-        { std::regex("^([a-zA-Z_][_[:alnum:]]*)"), token::Identifier },
-        { std::regex("^(\\=)"), token::Assign },
-        { std::regex("^([[:digit:]]+(.[[:digit:]]+)?)"), token::Number },
-        { std::regex("^(\\+)"), token::Add },
-        { std::regex("^(\\-)"), token::Subtract },
-        { std::regex("^(\\*)"), token::Multiply },
-        { std::regex("^(\\/)"), token::Divide },
-        { std::regex("^(\\%)"), token::Modulo },
-        { std::regex("^(\\()"), token::LeftParantheses },
-        { std::regex("^(\\))"), token::RightParantheses },
-        { std::regex("^([[:space:]]+)"), token::WhiteSpace },
-    };
-
     Lexer::Lexer(const std::string& input)
         : input_(input)
     {
+        register_token("[a-zA-Z_][_[:alnum:]]*", token::Identifier);
+        register_token("\\=", token::Assign);
+        register_token("[[:digit:]]+(.[[:digit:]]+)?", token::Number);
+        register_token("\\+", token::Add);
+        register_token("\\-", token::Subtract);
+        register_token("\\*", token::Multiply);
+        register_token("\\/", token::Divide);
+        register_token("\\%", token::Modulo);
+        register_token("\\(", token::LeftParantheses);
+        register_token("\\)", token::RightParantheses);
+        register_token("[[:space:]]+", token::WhiteSpace);
         advance();
     }
 
@@ -73,7 +67,7 @@ namespace calculator
 
     token Lexer::next_token()
     {
-        for(auto regex : regex_table)
+        for(auto regex : regex_table_)
         {
             std::smatch base_match;
             if(std::regex_search(input_, base_match, regex.first))
@@ -84,5 +78,10 @@ namespace calculator
             }
         }
         return token();
+    }
+
+    void Lexer::register_token(const std::string& regex, token::Type token)
+    {
+        regex_table_.push_back({ std::regex("^" + regex), token });
     }
 }
